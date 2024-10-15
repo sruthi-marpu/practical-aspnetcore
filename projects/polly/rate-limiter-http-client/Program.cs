@@ -18,7 +18,7 @@ services.AddHttpClient("concurrency-http")
 }).AddResilienceHandler("concurrency-http-policy", (builder, c) =>
 {
     builder
-        .AddConcurrencyLimiter(permitLimit: 20, queueLimit: 50) // only allow 20 concurrent requests, queue up to 50
+        .AddConcurrencyLimiter(permitLimit: 5, queueLimit: 5)// only allow 20 concurrent requests, queue up to 50
         .AddRetry(new RetryStrategyOptions<HttpResponseMessage>
         {
             ShouldHandle = response =>
@@ -55,8 +55,6 @@ services.AddHttpClient("concurrency-http")
             },
             BackoffType = DelayBackoffType.Constant
         })
-        
-        
         .Build();
 });
 
