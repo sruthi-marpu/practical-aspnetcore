@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Polly.RateLimiting;
 
 public class IndexModel(IHttpClientFactory clientFactory, ILogger<IndexModel> logger) : PageModel
 {
@@ -29,8 +30,15 @@ public class IndexModel(IHttpClientFactory clientFactory, ILogger<IndexModel> lo
     }
     static async Task LoadProductsJsonAsync(HttpClient client, ILogger log, int batch, int idx, string url, ConcurrentDictionary<int, string> track)
     {
-        var result = await client.GetAsync(url);
-        log.LogInformation($"Batch {batch} Request {idx} completed with status code {result.StatusCode}");
-        track[idx] = $"In Batch {batch} completed with status code {result.StatusCode}";
+        try
+        {
+            var result = await client.GetAsync(url);
+            log.LogInformation($"Batch {batch} Request {idx} completed with status code {result.StatusCode}");
+            track[idx] = $"In Batch {batch} completed with status code {result.StatusCode}";
+        }
+        catch(RateLimiterRejectedException ex)
+        {
+            log.LogError(ex, $"Batch {batch} Request {idx} failed with exception {ex.Message}");
+        };
     }
 }
