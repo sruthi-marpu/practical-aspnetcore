@@ -23,6 +23,9 @@ services.AddHttpClient("concurrency-http")
         {
             ShouldHandle = response =>
             {
+                if (response.Outcome.Exception is RateLimiterRejectedException)
+                    return ValueTask.FromResult(true);
+
                 // retry when the status is not OK
                 var result = response.Outcome.Result.StatusCode != HttpStatusCode.OK;
                 return ValueTask.FromResult(result);
@@ -51,7 +54,10 @@ services.AddHttpClient("concurrency-http")
                 return default;
             },
             BackoffType = DelayBackoffType.Constant
-        }).Build();
+        })
+        
+        
+        .Build();
 });
 
 var app = builder.Build();
