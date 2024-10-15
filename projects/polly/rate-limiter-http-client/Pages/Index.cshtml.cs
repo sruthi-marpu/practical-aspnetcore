@@ -35,12 +35,7 @@ public class IndexModel(IHttpClientFactory clientFactory, ILogger<IndexModel> lo
         {
             var result = await client.GetAsync(url);
             log.LogInformation($"Batch {batch} Request {idx} completed with status code {result.StatusCode}");
-            
-            //This means that the request is retried because of previous failure
-            if (track.ContainsKey(idx))
-                track[idx] = track[idx] + $"<br>After Retry In Batch {batch} completed with status code {result.StatusCode}";
-            else
-                track[idx] = $"In Batch {batch} completed with status code {result.StatusCode}";
+            track[idx] = $"In Batch {batch} completed with status code {result.StatusCode}";
         }
         catch(RateLimiterRejectedException ex)
         {
