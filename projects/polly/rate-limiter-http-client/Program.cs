@@ -1,8 +1,10 @@
+using System.Net;
 using Polly;
+using Polly.RateLimiting;
 using Polly.Retry;
 
 var builder = WebApplication.CreateBuilder();
-builder.Logging.SetMinimumLevel(LogLevel.Information);
+builder.Logging.SetMinimumLevel(LogLevel.Warning);
 builder.Logging.AddConsole();
 
 var services = builder.Services;
@@ -16,13 +18,20 @@ services.AddHttpClient("concurrency-http")
 }).AddResilienceHandler("concurrency-http-policy", (builder, c) =>
 {
     builder
-        .AddConcurrencyLimiter(permitLimit: 100, queueLimit: 50)
+        .AddConcurrencyLimiter(permitLimit: 20, queueLimit: 50) // only allow 20 concurrent requests, queue up to 50
         .AddRetry(new RetryStrategyOptions<HttpResponseMessage>
         {
+            ShouldHandle = response =>
+            {
+                // retry when the status is not OK
+                var result = response.Outcome.Result.StatusCode != HttpStatusCode.OK;
+                return ValueTask.FromResult(result);
+            },
             MaxRetryAttempts = 3,
             DelayGenerator = static args =>
             {
-                var delay = args.AttemptNumber switch
+                // Make the delay increase with each retry
+                var delay = args.AttemptNumber switch 
                 {
                     0 => TimeSpan.Zero,
                     1 => TimeSpan.FromSeconds(1),
@@ -35,9 +44,8 @@ services.AddHttpClient("concurrency-http")
             },
             OnRetry = args =>
             {
-                var logger = c.ServiceProvider.GetService<ILogger>();
+                var logger = c.ServiceProvider.GetService<ILogger<Program>>();
                 logger.LogError("OnRetry, Attempt: {0}", args.AttemptNumber);
-                Console.WriteLine("OnRetry, Attempt: {0}", args.AttemptNumber);
 
                 // Event handlers can be asynchronous; here, we return an empty ValueTask.
                 return default;

@@ -14,7 +14,8 @@ public class IndexModel(IHttpClientFactory clientFactory, ILogger<IndexModel> lo
         var url = "https://dummyjson.com/products";
         var totalRequests = 1000;
 
-        const int batchSize = 10;
+        const int batchSize = 20;
+        //Batch size determine how many calls do you want to call at the same time
         for (int i = 0; i < totalRequests; i += batchSize)
         {
             var batchTasks = new List<Task>();
@@ -34,7 +35,12 @@ public class IndexModel(IHttpClientFactory clientFactory, ILogger<IndexModel> lo
         {
             var result = await client.GetAsync(url);
             log.LogInformation($"Batch {batch} Request {idx} completed with status code {result.StatusCode}");
-            track[idx] = $"In Batch {batch} completed with status code {result.StatusCode}";
+            
+            //This means that the request is retried because of previous failure
+            if (track.ContainsKey(idx))
+                track[idx] = track[idx] + $"<br>After Retry In Batch {batch} completed with status code {result.StatusCode}";
+            else
+                track[idx] = $"In Batch {batch} completed with status code {result.StatusCode}";
         }
         catch(RateLimiterRejectedException ex)
         {
