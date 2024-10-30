@@ -48,6 +48,7 @@ You can find samples on new features availabel in ASP.NET Core 9(3) [here](/proj
 | [Open Telemetry](/projects/open-telemetry/)                             | 3   |                                                                              |
 | [Orchard Core](/projects/orchard-core)                                  | 4   |                                                                              |
 | [Path String (HttpContext.Request.Path)](/projects/path-string)         | 1   |                                                                              |
+| [Polly](/projects/polly/)                                               | 1   |                                                                              |
 | [Problem Details Middleware](/projects/problem-details-middleware/)     | 3   |                                                                              |
 | [Razor Pages](/projects/razor-pages)                                    | 10  | TempData                                                                     |
 | [RazorSlices](/projects/razor-slices)                                   | 1   |                                                                              |
