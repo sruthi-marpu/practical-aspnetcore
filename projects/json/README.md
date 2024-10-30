@@ -1,4 +1,4 @@
-# Json (22)
+# Json (23)
 
 All about the new `System.Text.Json` namespace.
 
@@ -106,5 +106,9 @@ All about the new `System.Text.Json` namespace.
 * [JSON - 25](json-25)
 
   In this case we add one extra `timestamp` property to the serialization process. 
+
+* [JSON - 26](json-26)
+
+  This sample shows how to detect the type of a JSON property. 
 
 dotnet8

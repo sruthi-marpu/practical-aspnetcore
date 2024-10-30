@@ -59,7 +59,7 @@ You can find samples on new features availabel in ASP.NET Core 9(3) [here](/proj
 | [Security](/projects/security)                                          | 7   |                                                                              |
 | [Single File Application](/projects/sfa)                                | 2   |                                                                              |
 | [Static Files and File Provider](/projects/file-provider)               | 10  |                                                                              |
-| [System.Text.Json](/projects/json)                                      | 22  |                                                                              |
+| [System.Text.Json](/projects/json)                                      | 23  |                                                                              |
 | [Syndications](/projects/syndications)                                  | 3   |                                                                              |
 | [Testing](/projects/testing)                                            | 1   |                                                                              |
 | [Unpoly](/projects/unpoly)                                              | 5   |                                                                              |
