@@ -1,0 +1,6 @@
+@model HelloWorld.Pages.Components.Message
+
+<div>
+    <h1>@Model.Text</h1>
+    <button on:click="@(() => Model.Show("Hello World"))">Show</button>
+</div>
